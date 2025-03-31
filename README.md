@@ -1,6 +1,6 @@
 # Real-time News Ingestion System
 
-This project is a production-grade, real-time news ingestion system built with FastAPI. It ingests various news content formats (e.g., headlines, full-text articles, scraped content, documents) via REST API, WebSocket, and UDP, stores the data in Elasticsearch, and provides a query API for fast retrieval. An optional in-memory cache is implemented using `async_lru` to speed up frequently queried news articles.
+This project is a production-grade, real-time news ingestion system built with FastAPI. It ingests various news content formats (e.g., headlines, full-text articles, scraped content, documents) via REST API, WebSocket, and UDP, stores the data in Elasticsearch, and provides a query API for fast retrieval. An in-memory cache is implemented using `async_lru` to speed up frequently queried news articles.
 
 ---
 
@@ -77,6 +77,9 @@ This project is a production-grade, real-time news ingestion system built with F
   For extremely high ingestion rates, integrate a broker like Kafka or RabbitMQ.
 - **Caching:**  
   In-memory caching with `async_lru` is used to speed up frequently requested queries.
+- **Monitoring & Alerts:**  
+Integrate monitoring (e.g., Prometheus, Grafana) and logging (e.g., ELK stack) to track performance and errors.
+
 
 ---
 
@@ -106,9 +109,16 @@ docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 \
 Confirm with:
 curl -k -u "elastic:YOUR_PASSWORD" https://localhost:9200
 
+
+5. **Install Testing Dependencies:**
+
+   Ensure you have the necessary testing packages installed:
+   ```bash
+   pip install pytest pytest-asyncio httpx
                                     ################################
                                     #### How to Run the System #####
                                     ################################
+
 
 1. **Start the FastAPI Application:**
     uvicorn main:app --host 0.0.0.0 --port 8000 --log-level info
@@ -156,6 +166,65 @@ Match All Query:
 curl -k -u "elastic:YOUR_PASSWORD" -X POST -H "Content-Type: application/json" \
      -d '{"query": {"match_all": {}}}' https://localhost:9200/news/_search?pretty
 
+POST /ingest
+Purpose:
+Accepts a news item (e.g., headline, full article, scraped content, or document) and schedules it for indexing into Elasticsearch.
+
+Payload Example:
+{
+  "timestamp": "2025-03-29T12:00:00",
+  "source": "Reuters",
+  "type": "headline",
+  "content": "Breaking News: Major event in the city."
+}
+
+Response:
+Returns a status message indicating that the news item is being processed.
+
+curl -X POST http://localhost:8000/ingest \
+     -H "Content-Type: application/json" \
+     -d '{"timestamp": "2025-03-29T12:00:00", "source": "Reuters", "type": "headline", "content": "Breaking News: Major event in the city."}'
+
+ POST /search
+Purpose:
+Allows users to query the stored news documents based on a combination of filters such as timestamp range, keyword, and source.
+
+Payload Example:
+{
+  "start_time": "2025-03-28T00:00:00",
+  "end_time": "2025-03-29T23:59:59",
+  "keyword": "event",
+  "source": "Reuters"
+}
+Response:
+Returns a list of news items that match the criteria. Each item will include fields like timestamp, source, type, and content.
+
+Usage Example (cURL):
+curl -X POST http://localhost:8000/search \
+     -H "Content-Type: application/json" \
+     -d '{"start_time": "2025-03-28T00:00:00", "end_time": "2025-03-29T23:59:59", "keyword": "event", "source": "Reuters"}'
+
+GET /health
+Purpose:
+Provides a health check for the service. It verifies that the application is running and that Elasticsearch is reachable.
+
+Response Example:
+{
+  "status": "healthy"
+}
+Usage Example (cURL):
+curl http://localhost:8000/health
+
+Additional Endpoint: WebSocket /ws
+Although not a REST API endpoint, the system also provides a WebSocket endpoint to support real-time ingestion.
+
+Path: /ws
+
+Purpose:
+Opens a persistent connection for receiving continuous streams of news items in real time.
+
+Usage:
+Connect via a WebSocket client, send JSON-encoded news items, and receive acknowledgment messages.
 
 Troubleshooting
 Elasticsearch Connection Issues:
