@@ -39,7 +39,7 @@ This project is a production-grade, real-time news ingestion system built with F
 ---
 
 ## Database/Storage Choice and Trade-offs
-**Why Elasticsearch?**
+## Why Elasticsearch?
   Elasticsearch was chosen because it best fits the needs of a real-time, high-volume ingestion system:
 
   **Read/Write Speed:**
@@ -98,7 +98,8 @@ This project is a production-grade, real-time news ingestion system built with F
 - **Monitoring & Alerts:**  
 Integrate monitoring solutions (e.g., Prometheus, Grafana) and logging (e.g., ELK stack) to track system performance and errors in real time.
 
-**Kafka Integration**
+## Kafka Integration
+
 **Decoupling Ingestion from Processing:**
 With Kafka integrated as a message broker, the ingestion service now publishes incoming news items to a Kafka topic. This decouples the ingestion layer from downstream processing, ensuring that the system can absorb bursts of high traffic without overwhelming Elasticsearch.
 
@@ -108,7 +109,7 @@ Kafka provides durability and fault tolerance. In case Elasticsearch experiences
 **Improved Scalability:**
 The integration allows you to scale the consumer side independently. You can add more Kafka consumers to handle higher ingestion rates, making the system more scalable for real-time, high-volume data streams.
 
-**Justification for Database Choice (Elasticsearch)**
+## Justification for Database Choice (Elasticsearch)
 Elasticsearch was chosen for its:
 
 High read/write speeds, enabling real-time processing of news items.
@@ -119,7 +120,7 @@ Native full-text search capabilities, ideal for handling unstructured text and c
 
 CAP Theorem alignment, prioritizing availability and partition tolerance, which is acceptable for news ingestion where eventual consistency is sufficient.
 
-**How to Scale the System for Higher Data Loads**
+## How to Scale the System for Higher Data Loads
 Increase Kafka Consumers:
 As ingestion rates grow, you can add additional consumer instances to process messages in parallel from Kafka.
 
