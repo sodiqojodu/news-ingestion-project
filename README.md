@@ -167,7 +167,7 @@ curl -k -u "elastic:YOUR_PASSWORD" https://localhost:9200
 
 5. **Set Up Kafka:**
 Using Docker Compose, create a docker-compose.yml:
-
+  
 version: '2'
 services:
   zookeeper:
@@ -188,6 +188,7 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
 
 Then run:
 docker-compose up -d
