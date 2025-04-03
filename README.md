@@ -143,7 +143,7 @@ Expand in-memory caching strategies to reduce the load on Elasticsearch for freq
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/news-ingestion-system.git
+   git clone https://github.com/sodiqojodu/news-ingestion-project.git
    cd news-ingestion-system
 
 2. **Create and Activate a Virtual Environment:**
